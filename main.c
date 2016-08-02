@@ -83,34 +83,6 @@ double ortalamaAritmetikBul(double *degerler)
 }
 
 
-double ortalamaGeoBul(double *degerler)
-{
-    int i;
-    double carpim = 1;
-    double ust = 1.0/kontrolAdet;
-    double ort;
-    for(i=0; i<kontrolAdet; i++)
-    {
-        carpim *= degerler[i];
-    }
-
-    ort = pow(carpim,ust);
-
-    if (ort==HUGE_VAL)
-    {
-        ort = DBL_MAX;
-    }
-    else if(isnan(ort))
-    {
-        ort = 0.0;
-    }
-
-
-
-    return ort;
-
-}
-
 double ortalamaHarmonikBul(double *degerler)
 {
     int i;
@@ -162,13 +134,12 @@ double varyansBul(double *degerler,double ortalama)
 
 
 
-void anlikOrtalamalar(double *degerler,double *anlikAritmetikOrt,double *anlikGeometrikOrt,double *anlikHarmonikOrt,double *anlikKuadratikOrt)
+void anlikOrtalamalar(double *degerler,double *anlikAritmetikOrt,double *anlikHarmonikOrt,double *anlikKuadratikOrt)
 {
     int i;
     double fark;
     double aritmatikToplam , harmonikToplam , kuadratikToplam ;
     aritmatikToplam = harmonikToplam = kuadratikToplam = 0;
-    double geometrikCarpim = 1;
 
 
     for(i=1; i<kontrolAdet; i++)
@@ -177,13 +148,10 @@ void anlikOrtalamalar(double *degerler,double *anlikAritmetikOrt,double *anlikGe
         aritmatikToplam += fark;
         harmonikToplam += 1/fark;
         kuadratikToplam += fark*fark;
-        geometrikCarpim *= fark;
 
     }
 
     *anlikAritmetikOrt = aritmatikToplam/kontrolAdet;
-
-    *anlikGeometrikOrt = pow(geometrikCarpim,1.0/kontrolAdet);
 
 
     if (*anlikGeometrikOrt==HUGE_VAL)
@@ -528,13 +496,11 @@ void islem(double **degerler, int argSayisi, char ayrac, FILE **fWrite)
     double median;
     double mod;
     double aritmetikOrtalama;
-    double geometrikOrtalama;
     double harmonikOrtalama;
     double kuadratikOrtalama;
     double stdSapma;
     double varyans;
     double anlikAritmetikOrt;
-    double anlikGeometrikOrt;
     double anlikHarmonikOrt;
     double anlikKuadratikOrt;
     double varyasyonKatSayi;
@@ -550,16 +516,15 @@ void islem(double **degerler, int argSayisi, char ayrac, FILE **fWrite)
         maxRed = maxRedBul(degerler[x]);
 
         aritmetikOrtalama = ortalamaAritmetikBul(degerler[x]);
-        geometrikOrtalama = ortalamaGeoBul(degerler[x]);
         harmonikOrtalama = ortalamaHarmonikBul(degerler[x]);
         kuadratikOrtalama = ortalamaKuadratikBul(degerler[x]);
         varyans = varyansBul(degerler[x],aritmetikOrtalama);
         stdSapma = standartSapma(varyans);
-        anlikOrtalamalar(degerler[x],&anlikAritmetikOrt,&anlikGeometrikOrt,&anlikHarmonikOrt,&anlikKuadratikOrt);
+        anlikOrtalamalar(degerler[x],&anlikAritmetikOrt,&anlikHarmonikOrt,&anlikKuadratikOrt);
         varyasyonKatSayi = varyasyonKatSayisi(stdSapma,aritmetikOrtalama);
         modMedianBul(degerler[x],&median,&mod);
         //printf("\nMin: %lf, Max: %lf,",geometrikOrtalama,varyans);
-        fprintf(*fWrite,"%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c",minRed,ayrac,maxRed,ayrac,minInc,ayrac,maxInc,ayrac,min,ayrac,max,ayrac,ranj,ayrac,aritmetikOrtalama,ayrac,geometrikOrtalama,ayrac,harmonikOrtalama,ayrac,kuadratikOrtalama,ayrac,mod,ayrac,median,ayrac,stdSapma,ayrac,varyans,ayrac,anlikAritmetikOrt,ayrac,anlikGeometrikOrt,ayrac,anlikHarmonikOrt,ayrac,anlikKuadratikOrt,ayrac,varyasyonKatSayi,ayrac);
+        fprintf(*fWrite,"%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c",minRed,ayrac,maxRed,ayrac,minInc,ayrac,maxInc,ayrac,min,ayrac,max,ayrac,ranj,ayrac,aritmetikOrtalama,ayrac,harmonikOrtalama,ayrac,kuadratikOrtalama,ayrac,mod,ayrac,median,ayrac,stdSapma,ayrac,varyans,ayrac,anlikAritmetikOrt,ayrac,anlikHarmonikOrt,ayrac,anlikKuadratikOrt,ayrac,varyasyonKatSayi,ayrac);
     }
 
 }
