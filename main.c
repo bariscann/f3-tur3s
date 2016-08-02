@@ -15,7 +15,6 @@ void doubleMErr(double **);
 void doubleDErr(double *);
 
 
-
 int atlamaMik;
 int kontrolAdet;
 
@@ -152,16 +151,6 @@ void anlikOrtalamalar(double *degerler,double *anlikAritmetikOrt,double *anlikHa
     }
 
     *anlikAritmetikOrt = aritmatikToplam/kontrolAdet;
-
-
-    if (*anlikGeometrikOrt==HUGE_VAL)
-    {
-        *anlikGeometrikOrt = DBL_MAX;
-    }
-    else if (isnan(*anlikGeometrikOrt))
-    {
-        *anlikGeometrikOrt = 0.0;
-    }
     *anlikHarmonikOrt = kontrolAdet/harmonikToplam;
     *anlikKuadratikOrt = sqrt(kuadratikToplam/kontrolAdet);
 
@@ -554,31 +543,7 @@ int main()
     double dDonustur = 1;
     double isaret = 1;
 
-
-    double min;
-    double max;
-    double ranj;
-    double minInc;
-    double maxInc;
-    double minRed;
-    double maxRed;
-    double median;
-    double mod;
-    double aritmetikOrtalama;
-    double geometrikOrtalama;
-    double harmonikOrtalama;
-    double kuadratikOrtalama;
-    double stdSapma;
-    double varyans;
-    double anlikAritmetikOrt;
-    double anlikGeometrikOrt;
-    double anlikHarmonikOrt;
-    double anlikKuadratikOrt;
-    double varyasyonKatSayi;
-
-
-
-
+    
     int sure;
     int frekans;
     int atlamaOrani;
@@ -789,31 +754,6 @@ int main()
                             oklids[x][y] = sqrt(oklidDegeri);
                         }
                     }
-
-
-
-                    //                    for(x=0; x<argSayisi; x++)
-                    //                    {
-                    //                        min = minBul(degerler[x]);
-                    //                        max = maxBul(degerler[x]);
-                    //                        ranj = ranjBul(min,max);
-                    //                        minInc = minIncBul(degerler[x]);
-                    //                        maxInc = maxIncBul(degerler[x]);
-                    //                        minRed = minRedBul(degerler[x]);
-                    //                        maxRed = maxRedBul(degerler[x]);
-                    //
-                    //                        aritmetikOrtalama = ortalamaAritmetikBul(degerler[x]);
-                    //                        geometrikOrtalama = ortalamaGeoBul(degerler[x]);
-                    //                        harmonikOrtalama = ortalamaHarmonikBul(degerler[x]);
-                    //                        kuadratikOrtalama = ortalamaKuadratikBul(degerler[x]);
-                    //                        varyans = varyansBul(degerler[x],aritmetikOrtalama);
-                    //                        stdSapma = standartSapma(varyans);
-                    //                        anlikOrtalamalar(degerler[x],&anlikAritmetikOrt,&anlikGeometrikOrt,&anlikHarmonikOrt,&anlikKuadratikOrt);
-                    //                        varyasyonKatSayi = varyasyonKatSayisi(stdSapma,aritmetikOrtalama);
-                    //                        modMedianBul(degerler[x],&median,&mod);
-                    //                        //printf("\nMin: %lf, Max: %lf,",geometrikOrtalama,varyans);
-                    //                        fprintf(fWrite,"%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c",minRed,ayrac,maxRed,ayrac,minInc,ayrac,maxInc,ayrac,min,ayrac,max,ayrac,ranj,ayrac,aritmetikOrtalama,ayrac,geometrikOrtalama,ayrac,harmonikOrtalama,ayrac,kuadratikOrtalama,ayrac,mod,ayrac,median,ayrac,stdSapma,ayrac,varyans,ayrac,anlikAritmetikOrt,ayrac,anlikGeometrikOrt,ayrac,anlikHarmonikOrt,ayrac,anlikKuadratikOrt,ayrac,varyasyonKatSayi,ayrac);
-                    //                    }
 
 
                     islem(degerler,argSayisi,ayrac,&fWrite);
