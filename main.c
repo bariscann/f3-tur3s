@@ -35,7 +35,8 @@ int isCSV(char *dosyaAdi)
 void labelBul(char *dosyaAdi, char *label, int labelType)
 {
     int i=0,j=0;
-    if(labelType == 1){
+    if(labelType == 1)
+    {
         while(dosyaAdi[i] != '_')
         {
             label[i] = dosyaAdi[i];
@@ -44,13 +45,15 @@ void labelBul(char *dosyaAdi, char *label, int labelType)
         label[i] = '\0';
 
     }
-    else if (labelType == 0){
+    else if (labelType == 0)
+    {
         while(dosyaAdi[i] != '_')
         {
             i++;
         }
         i++;
-        while(dosyaAdi[i] != '_'){
+        while(dosyaAdi[i] != '_')
+        {
             label[j] = dosyaAdi[i];
             i++;
             j++;
@@ -58,7 +61,8 @@ void labelBul(char *dosyaAdi, char *label, int labelType)
         label[j] = dosyaAdi[i]; // _'da kalmamasi icin
         i++;
         j++;
-        while(dosyaAdi[i] != '_'){
+        while(dosyaAdi[i] != '_')
+        {
             label[j] = dosyaAdi[i];
             i++;
             j++;
@@ -129,24 +133,27 @@ double varyansBul(double *degerler,double ortalama)
 }
 
 
-
-
-
-
-void anlikOrtalamalar(double *degerler,double *anlikAritmetikOrt,double *anlikHarmonikOrt,double *anlikKuadratikOrt)
+void anlikOrtalamalar(double *degerler,int baslangic, double *anlikAritmetikOrt,double *anlikHarmonikOrt,double *anlikKuadratikOrt)
 {
     int i;
     double fark;
     double aritmatikToplam , harmonikToplam , kuadratikToplam ;
     aritmatikToplam = harmonikToplam = kuadratikToplam = 0;
-
+    int j = baslangic;
+    baslangic++;
+    baslangic %= kontrolAdet;
 
     for(i=1; i<kontrolAdet; i++)
     {
-        fark = degerler[i]-degerler[i-1];
+
+        fark = degerler[baslangic]-degerler[j];
         aritmatikToplam += fark;
         harmonikToplam += 1/fark;
         kuadratikToplam += fark*fark;
+
+        j = baslangic;
+        baslangic++;
+        baslangic %= kontrolAdet;
 
     }
 
@@ -159,18 +166,23 @@ void anlikOrtalamalar(double *degerler,double *anlikAritmetikOrt,double *anlikHa
 
 double varyasyonKatSayisi(double stdSapma,double ortalama)
 {
-    if (ortalama == 0){
-        if(ortalama>0){
+    if (ortalama == 0)
+    {
+        if(stdSapma>0)
+        {
             return DBL_MAX;
         }
-        else if (ortalama<0){
+        else if (stdSapma<0)
+        {
             return -DBL_MAX;
         }
-        else {
+        else
+        {
             return 0;
         }
     }
-    else{
+    else
+    {
         return stdSapma/ortalama;
     }
 }
@@ -214,160 +226,122 @@ double maxBul(double *degerler)
 
 
 
-
-
-
 double ranjBul(double min, double max)
 {
     return max - min;
 }
 
-
-
-
-
-
-
-double minIncBul(double *degerler)  //minimum artis
+double minIncBul(double *degerler,int baslangic)  //minimum artis
 {
 
-    int i,j;
-    i = 0;
-    double min,fark;
+    int i;
 
-    do
-    {
-        i++;
-    }
-    while ((i<kontrolAdet) && (degerler[i]<=degerler[i-1]));
+    double min = DBL_MAX,fark;
+    int j = baslangic;
+    baslangic++;
+    baslangic %= kontrolAdet;
 
-    if (i>=kontrolAdet)  // eger artis bulunamadiysa
+    for(i = 1; i<kontrolAdet; i++)
     {
-        min = 0; // artis default degeri kac olmali?..
-    }
-    else
-    {
-        min = degerler[i]-degerler[i-1];
-
-        for(j=i+1; j<kontrolAdet; j++)
+        fark = degerler[baslangic]-degerler[j];
+        if ((fark>0) && (fark<min))
         {
-            fark = degerler[j]-degerler[j-1];
-            if ((fark>0) && (fark<min))
-            {
-                min = fark;
-
-            }
-
+            min = fark;
         }
+        j = baslangic;
+        baslangic++;
+        baslangic %= kontrolAdet;
+
     }
+
+    if(min == DBL_MAX){
+        min = 0;
+    }
+
     return min;
 }
 
-double maxIncBul(double *degerler)  //maximum artis
+double maxIncBul(double *degerler,int baslangic)  //maximum artis
 {
 
+    int i;
 
-    int i,j;
-    i = 0;
-    double max,fark;
-    do
-    {
-        i++;
-    }
-    while ((i<kontrolAdet) && (degerler[i]<=degerler[i-1]));
+    double max = 0,fark;
+    int j = baslangic;
+    baslangic++;
+    baslangic %= kontrolAdet;
 
-    if (i>=kontrolAdet)  // eger artis bulunamadiysa
+    for(i = 1; i<kontrolAdet; i++)
     {
-        max = 0; // artis default degeri kac olmali?..
-    }
-    else
-    {
-        max = degerler[i]-degerler[i-1];
-
-        for(j=i+1; j<kontrolAdet; j++)
+        fark = degerler[baslangic]-degerler[j];
+        if ((fark>0) && (fark>max))
         {
-            fark = degerler[j]-degerler[j-1];
-            if ((fark>0) && (fark>max))
-            {
-                max = fark;
-
-            }
-
+            max = fark;
         }
+        j = baslangic;
+        baslangic++;
+        baslangic %= kontrolAdet;
+
     }
+
     return max;
 }
 
 
 
 
-double minRedBul(double *degerler)  //minimum azalis
+double minRedBul(double *degerler,int baslangic)  //minimum azalis
 {
-    int i,j;
-    i = 0;
-    double min,fark;
-    do
-    {
-        i++;
-    }
-    while ((i<kontrolAdet) && (degerler[i]>=degerler[i-1]));
+    int i;
 
-    if (i>=kontrolAdet)  // eger azalis bulunamadiysa
-    {
-        min = 0; // azalis default degeri kac olmali?..
-    }
-    else
-    {
-        min = degerler[i]-degerler[i-1];
+    double min = -DBL_MAX,fark;
+    int j = baslangic;
+    baslangic++;
+    baslangic %= kontrolAdet;
 
-        for(j=i+1; j<kontrolAdet; j++)
+    for(i = 1; i<kontrolAdet; i++)
+    {
+        fark = degerler[baslangic]-degerler[j];
+        if ((fark<0) && (fark>min))
         {
-            fark = degerler[j]-degerler[j-1];
-            if ((fark<0) && (fark>min))
-            {
-                min = fark;
-
-            }
-
+            min = fark;
         }
-    }
-    return min;
+        j = baslangic;
+        baslangic++;
+        baslangic %= kontrolAdet;
 
+    }
+    if(min == -DBL_MAX){
+        min = 0;
+    }
+
+    return min;
 }
 
 
 
-double maxRedBul(double *degerler)  //maximum artis
+double maxRedBul(double *degerler,int baslangic)  //maximum artis
 {
-    int i,j;
-    i = 0;
-    double max,fark;
+    int i;
 
-    do
-    {
-        i++;
-    }
-    while ((i<kontrolAdet) && (degerler[i]>=degerler[i-1]));
+    double max = 0,fark;
+    int j = baslangic;
+    baslangic++;
+    baslangic %= kontrolAdet;
 
-    if (i>=kontrolAdet)  // eger artis bulunamadiysa
+    for(i = 1; i<kontrolAdet; i++)
     {
-        max = 0; // artis default degeri kac olmali?..
-    }
-    else
-    {
-        max = degerler[i]-degerler[i-1];
-
-        for(j=i+1; j<kontrolAdet; j++)
+        fark = degerler[baslangic]-degerler[j];
+        if ((fark<0) && (fark<max))
         {
-            fark = degerler[j]-degerler[j-1];
-            if ((fark<0) && (fark<max))
-            {
-                max = fark;
-
-            }
-
+            max = fark;
         }
+        j = baslangic;
+        baslangic++;
+        baslangic %= kontrolAdet;
+
     }
+
     return max;
 
 }
@@ -471,7 +445,7 @@ void modMedianBul (double *degerler,double *median, double *mod)
 
 
 
-void islem(double **degerler, int argSayisi, char ayrac, FILE **fWrite)
+void islem(double **degerler,int baslangic, int argSayisi, char ayrac, FILE **fWrite)
 {
 
     int x;
@@ -499,17 +473,17 @@ void islem(double **degerler, int argSayisi, char ayrac, FILE **fWrite)
         min = minBul(degerler[x]);
         max = maxBul(degerler[x]);
         ranj = ranjBul(min,max);
-        minInc = minIncBul(degerler[x]);
-        maxInc = maxIncBul(degerler[x]);
-        minRed = minRedBul(degerler[x]);
-        maxRed = maxRedBul(degerler[x]);
+        minInc = minIncBul(degerler[x],baslangic);
+        maxInc = maxIncBul(degerler[x],baslangic);
+        minRed = minRedBul(degerler[x],baslangic);
+        maxRed = maxRedBul(degerler[x],baslangic);
 
         aritmetikOrtalama = ortalamaAritmetikBul(degerler[x]);
         harmonikOrtalama = ortalamaHarmonikBul(degerler[x]);
         kuadratikOrtalama = ortalamaKuadratikBul(degerler[x]);
         varyans = varyansBul(degerler[x],aritmetikOrtalama);
         stdSapma = standartSapma(varyans);
-        anlikOrtalamalar(degerler[x],&anlikAritmetikOrt,&anlikHarmonikOrt,&anlikKuadratikOrt);
+        anlikOrtalamalar(degerler[x],baslangic,&anlikAritmetikOrt,&anlikHarmonikOrt,&anlikKuadratikOrt);
         varyasyonKatSayi = varyasyonKatSayisi(stdSapma,aritmetikOrtalama);
         modMedianBul(degerler[x],&median,&mod);
         //printf("\nMin: %lf, Max: %lf,",geometrikOrtalama,varyans);
@@ -543,16 +517,16 @@ int main()
     double dDonustur = 1;
     double isaret = 1;
 
-    
+
     int sure;
     int frekans;
     int atlamaOrani;
     int labelType = 0;
 
     char *ozellikler[] = {"MINRED","MAXRED","MININC","MAXINC","MINVAL","MAXVAL", "RANGE",
-        "ARTMEAN", "GEOMEAN","HARMEAN", "QUADMEAN", "MOD", "MEDIAN", "STD","VAR", "IEARTMEAN", "IEGEOMEAN", "IEHARMEAN",
-        "IEQUADMEAN", "COV"
-    };
+                          "ARTMEAN","HARMEAN", "QUADMEAN", "MOD", "MEDIAN", "STD","VAR", "IEARTMEAN", "IEHARMEAN",
+                          "IEQUADMEAN", "COV"
+                         };
 
     // char *labels[] = {"walking","car","bus","tram","metro1","metro2","marmaray","metrobus","bicycle","ferry","n"};
     char *labels[] = {"walking","minibus_sitting","minibus_standing","car","bus_sitting","tram_sitting","metroH_sitting","metroK_sitting","marmaray_sitting","metrobus_sitting","ferry_sitting","bus_standing","tram_standing","metroH_standing","metroK_standing","marmaray_standing","metrobus_standing","ferry_standing"};
@@ -563,7 +537,7 @@ int main()
     char alan[100];
     int kacinciKelime;
     int yazildi=0;
-    int ozellikSayisi = 20;
+    int ozellikSayisi = 18;
     int labelSayisi = 18;
     int labelSayisi1= 8;
 
@@ -672,13 +646,15 @@ int main()
 
                 fprintf(fWrite,"@ATTRIBUTE label {");
                 labelSayisi--;
-                if(labelType == 0){
+                if(labelType == 0)
+                {
                     for(i=0; i<labelSayisi; i++)
                     {
                         fprintf(fWrite,"%s,",labels[i]);
                     }
                 }
-                else if (labelType == 1) {
+                else if (labelType == 1)
+                {
                     for(i=0; i<labelSayisi1; i++)
                     {
                         fprintf(fWrite,"%s,",labels1[i]);
@@ -691,10 +667,6 @@ int main()
                 printf("Arg Sayisi= %d\n",argSayisi);
 
 
-
-
-
-
                 printf("\nFrekans Nedir? (hz) ");
                 scanf("%d",&frekans);
 
@@ -703,13 +675,6 @@ int main()
 
                 printf("\nAtlama oranini yuzde olarak giriniz(Tam Sayi) ");
                 scanf("%d",&atlamaOrani);
-
-
-
-
-
-
-
 
 
                 kontrolAdet = (sure*frekans)/1000;
@@ -736,6 +701,7 @@ int main()
 
             degerSayisi = 0;
             r = 0;
+            f = 0;
 
             while(fgets(tmpSatir,LINESIZE,fRead))
             {
@@ -756,8 +722,8 @@ int main()
                     }
 
 
-                    islem(degerler,argSayisi,ayrac,&fWrite);
-                    islem(oklids,oklidBoyutu,ayrac,&fWrite);
+                    islem(degerler,r,argSayisi,ayrac,&fWrite);
+                    islem(oklids,r,oklidBoyutu,ayrac,&fWrite);
 
                     fprintf(fWrite,"%s",label);
                     putc('\n',fWrite);
@@ -823,18 +789,6 @@ int main()
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
