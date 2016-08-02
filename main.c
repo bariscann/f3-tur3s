@@ -346,16 +346,7 @@ double maxRedBul(double *degerler,int baslangic)  //maximum artis
 
 }
 
-void quickS(double dizi[],int l, int r)
-{
-    int pivotAddr;
-    if(l<r)
-    {
-        pivotAddr = partition(dizi,l,r);
-        quickS(dizi,l,pivotAddr-1);
-        quickS(dizi,pivotAddr+1,r);
-    }
-}
+
 
 int partition(double dizi[],int l, int r)
 {
@@ -393,6 +384,16 @@ int partition(double dizi[],int l, int r)
     dizi[j]=tmp;
 
     return j;
+}
+void quickS(double dizi[],int l, int r)
+{
+    int pivotAddr;
+    if(l<r)
+    {
+        pivotAddr = partition(dizi,l,r);
+        quickS(dizi,l,pivotAddr-1);
+        quickS(dizi,pivotAddr+1,r);
+    }
 }
 
 void modMedianBul (double *degerler,double *median, double *mod)
@@ -500,7 +501,7 @@ int main()
     int i,j,k,x,y;
     int indis;
     double oklidDegeri;
-    int f = 0;
+
     int r ;
     int argSayisi = 0;
     char dosyaAdiOkuma[100];
@@ -529,7 +530,7 @@ int main()
                          };
 
     // char *labels[] = {"walking","car","bus","tram","metro1","metro2","marmaray","metrobus","bicycle","ferry","n"};
-    char *labels[] = {"walking","minibus_sitting","minibus_standing","car","bus_sitting","tram_sitting","metroH_sitting","metroK_sitting","marmaray_sitting","metrobus_sitting","ferry_sitting","bus_standing","tram_standing","metroH_standing","metroK_standing","marmaray_standing","metrobus_standing","ferry_standing"};
+    char *labels[] = {"walking_walking","minibus_sitting","minibus_standing","car_car","bus_sitting","tram_sitting","metroH_sitting","metroK_sitting","marmaray_sitting","metrobus_sitting","ferry_sitting","bus_standing","tram_standing","metroH_standing","metroK_standing","marmaray_standing","metrobus_standing","ferry_standing"};
 
     char *labels1[]= {"walking","minibus","car","bus","tram","metro","metrobus","ferry"};
 
@@ -569,7 +570,7 @@ int main()
     {
         exit(1);
     }
-    while (ep = readdir (dp))
+    while ((ep = readdir (dp)))
     {
         // printf("\n%d,",ep);
         strcpy(dosyaAdiOkuma,ep->d_name);
@@ -648,10 +649,11 @@ int main()
                 labelSayisi--;
                 if(labelType == 0)
                 {
-                    for(i=0; i<labelSayisi; i++)
+                    for(i=0; i<labelSayisi-1; i++)
                     {
                         fprintf(fWrite,"%s,",labels[i]);
                     }
+                    fprintf(fWrite,"%s",labels[i]);
                 }
                 else if (labelType == 1)
                 {
@@ -701,7 +703,7 @@ int main()
 
             degerSayisi = 0;
             r = 0;
-            f = 0;
+
 
             while(fgets(tmpSatir,LINESIZE,fRead))
             {
@@ -770,7 +772,7 @@ int main()
         }
     }
 
-    printf("\n%d,",ep);
+
 
     for(i=0; i<argSayisi; i++)
     {
