@@ -752,7 +752,8 @@ int main()
                         tmpDeger += (tmpSatir[j] - '0');
                         j++;
                     }
-                    j++;
+                    if (tmpSatir[j] != ayrac)
+                        j++;
                     while(tmpSatir[j] != ayrac)
                     {
                         dDonustur *= 10;
