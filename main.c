@@ -5,10 +5,57 @@
 #include <dirent.h>
 #include <string.h>
 #include <errno.h>
-#include <float.h>
+
 
 #define oklidBoyutu 3
 #define LINESIZE 10000
+#define MAX_UC -100000
+#define MIN_UC 100000
+
+
+typedef struct
+{
+    double min;
+    double max;
+    double ranj;
+    double minInc;
+    double maxInc;
+    double minRed;
+    double maxRed;
+    double median;
+    double mod;
+    double aritmetikOrtalama;
+    double harmonikOrtalama;
+    double kuadratikOrtalama;
+    double stdSapma;
+    double varyans;
+    double anlikAritmetikOrt;
+    double anlikHarmonikOrt;
+    double anlikKuadratikOrt;
+    double varyasyonKatSayi;
+}OZELLIK_MIN;
+
+typedef struct
+{
+    double min;
+    double max;
+    double ranj;
+    double minInc;
+    double maxInc;
+    double minRed;
+    double maxRed;
+    double median;
+    double mod;
+    double aritmetikOrtalama;
+    double harmonikOrtalama;
+    double kuadratikOrtalama;
+    double stdSapma;
+    double varyans;
+    double anlikAritmetikOrt;
+    double anlikHarmonikOrt;
+    double anlikKuadratikOrt;
+    double varyasyonKatSayi;
+}OZELLIK_MAX;
 
 void dosyaErr(FILE *);
 void doubleMErr(double **);
@@ -17,6 +64,8 @@ void doubleDErr(double *);
 
 int atlamaMik;
 int kontrolAdet;
+
+//global olamaz bu buyuk ihtimal
 
 
 int isCSV(char *dosyaAdi)
@@ -72,68 +121,157 @@ void labelBul(char *dosyaAdi, char *label, int labelType)
 
 }
 
-double ortalamaAritmetikBul(double *degerler)
+double ortalamaAritmetikBul(double *degerler,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)
 {
     int i;
     double toplam = 0;
+    double ort;
     for(i=0; i<kontrolAdet; i++)
     {
         toplam += degerler[i];
     }
+    if(toplam == HUGE_VAL)
+    {
+        printf("\n---------------------------------\n");
+        for(i=0; i<kontrolAdet; i++)
+        {
+            printf("%f,",degerler[i]);
+        }
+        exit(0);
+    }
+    ort = toplam/kontrolAdet;
 
-    return toplam/kontrolAdet;
+    if(ort>(fMax->aritmetikOrtalama))
+    {
+        fMax->aritmetikOrtalama = ort;
+    }
+    else
+    {
+        if(ort<(fMin->aritmetikOrtalama))
+        {
+            fMin->aritmetikOrtalama = ort;
+        }
+    }
+
+
+
+    return ort;
 
 }
 
 
-double ortalamaHarmonikBul(double *degerler)
+double ortalamaHarmonikBul(double *degerler,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)
 {
     int i;
     double toplam = 0;
+    double ort;
+
     for(i=0; i<kontrolAdet; i++)
     {
         toplam += 1/degerler[i];
     }
-    return kontrolAdet/toplam;
+
+
+
+    ort = kontrolAdet/toplam;
+
+    if(ort>(fMax->harmonikOrtalama))
+    {
+        fMax->harmonikOrtalama = ort;
+    }
+    else
+    {
+        if(ort<(fMin->harmonikOrtalama))
+        {
+            fMin->harmonikOrtalama = ort;
+        }
+    }
+
+    return ort;
+
 
 }
 
-double ortalamaKuadratikBul(double *degerler)
+double ortalamaKuadratikBul(double *degerler,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)
 {
     int i;
     double toplam = 0;
+    double ort;
     for(i=0; i<kontrolAdet; i++)
     {
         toplam += (degerler[i]*degerler[i]);
     }
-    return sqrt(toplam/kontrolAdet);
 
+    ort = sqrt(toplam/kontrolAdet);
+
+    if(ort>(fMax->kuadratikOrtalama))
+    {
+        fMax->kuadratikOrtalama = ort;
+    }
+    else
+    {
+        if(ort<(fMin->kuadratikOrtalama))
+        {
+            fMin->kuadratikOrtalama = ort;
+        }
+    }
+
+    return ort;
 }
 
-double standartSapma(double varyans)
+double standartSapma(double varyans,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)
 {
-    return sqrt(varyans);
+    double stdSapma = sqrt(varyans);
+
+    if(stdSapma>(fMax->stdSapma))
+    {
+        fMax->stdSapma = stdSapma;
+    }
+    else
+    {
+        if(stdSapma<(fMin->stdSapma))
+        {
+            fMin->stdSapma = stdSapma;
+        }
+    }
+
+    return stdSapma;
 }
 
 
 
-double varyansBul(double *degerler,double ortalama)
+double varyansBul(double *degerler,double ortalama,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)
 {
     int i;
     double toplam = 0;
+    double varyans;
 
     for(i=0; i<kontrolAdet; i++)
     {
         toplam += pow((degerler[i]-ortalama),2);
     }
 
+    varyans = toplam/kontrolAdet;
 
-    return toplam/kontrolAdet;
+    if(varyans>(fMax->varyans))
+    {
+        fMax->varyans = varyans;
+    }
+    else
+    {
+        if(varyans<(fMin->varyans))
+        {
+            fMin->varyans = varyans;
+        }
+    }
+
+
+    return varyans;
 
 }
 
 
-void anlikOrtalamalar(double *degerler,int baslangic, double *anlikAritmetikOrt,double *anlikHarmonikOrt,double *anlikKuadratikOrt)
+void anlikOrtalamalar(double *degerler,int baslangic, double *anlikAritmetikOrt,double *anlikHarmonikOrt,double *anlikKuadratikOrt,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)
 {
     int i;
     double fark;
@@ -158,37 +296,88 @@ void anlikOrtalamalar(double *degerler,int baslangic, double *anlikAritmetikOrt,
     }
 
     *anlikAritmetikOrt = aritmatikToplam/kontrolAdet;
+    if(*anlikAritmetikOrt>(fMax->anlikAritmetikOrt))
+    {
+        fMax->anlikAritmetikOrt = *anlikAritmetikOrt;
+    }
+    else
+    {
+        if(*anlikAritmetikOrt<(fMin->anlikAritmetikOrt))
+        {
+            fMin->anlikAritmetikOrt = *anlikAritmetikOrt;
+        }
+    }
+
     *anlikHarmonikOrt = kontrolAdet/harmonikToplam;
+    if(*anlikHarmonikOrt>(fMax->anlikHarmonikOrt))
+    {
+        fMax->anlikHarmonikOrt = *anlikHarmonikOrt;
+    }
+    else
+    {
+        if(*anlikHarmonikOrt<(fMin->anlikHarmonikOrt))
+        {
+            fMin->anlikHarmonikOrt = *anlikHarmonikOrt;
+        }
+    }
+
     *anlikKuadratikOrt = sqrt(kuadratikToplam/kontrolAdet);
+    if(*anlikKuadratikOrt>(fMax->anlikKuadratikOrt))
+    {
+        fMax->anlikKuadratikOrt = *anlikKuadratikOrt;
+    }
+    else
+    {
+        if(*anlikKuadratikOrt<(fMin->anlikKuadratikOrt))
+        {
+            fMin->anlikKuadratikOrt = *anlikKuadratikOrt;
+        }
+    }
 
 }
 
 
-double varyasyonKatSayisi(double stdSapma,double ortalama)
+double varyasyonKatSayisi(double stdSapma,double ortalama,double min,double max,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)
 {
+    double vk;
+
     if (ortalama == 0)
     {
         if(stdSapma>0)
         {
-            return DBL_MAX;
+            vk = max;
         }
         else if (stdSapma<0)
         {
-            return -DBL_MAX;
+            vk = min;
         }
         else
         {
-            return 0;
+            vk = 0;
         }
     }
     else
     {
-        return stdSapma/ortalama;
+        vk = stdSapma/ortalama;
     }
+
+    if(vk>(fMax->varyasyonKatSayi))
+    {
+        fMax->varyasyonKatSayi = vk;
+    }
+    else
+    {
+        if(vk<(fMin->varyasyonKatSayi))
+        {
+            fMin->varyasyonKatSayi = vk;
+        }
+    }
+
+    return vk;
 }
 
 
-double minBul(double *degerler)
+double minBul(double *degerler,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)
 {
 
     int i;
@@ -203,11 +392,24 @@ double minBul(double *degerler)
         }
 
     }
+
+    if(min>(fMax->min))
+    {
+        fMax->min = min;
+    }
+    else
+    {
+        if(min<(fMin->min))
+        {
+            fMin->min = min;
+        }
+    }
+
     return min;
 
 }
 
-double maxBul(double *degerler)
+double maxBul(double *degerler,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)
 {
     int i;
     double max;
@@ -221,22 +423,50 @@ double maxBul(double *degerler)
         }
 
     }
+
+    if(max>(fMax->max))
+    {
+        fMax->max = max;
+    }
+    else
+    {
+        if(max<(fMin->max))
+        {
+            fMin->max = max;
+        }
+    }
+
     return max;
 }
 
 
 
-double ranjBul(double min, double max)
+double ranjBul(double min, double max,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)
 {
-    return max - min;
+    double ranj;
+    ranj = max - min;
+
+    if(ranj>(fMax->ranj))
+    {
+        fMax->ranj = ranj;
+    }
+    else
+    {
+        if(ranj<(fMin->ranj))
+        {
+            fMin->ranj = ranj;
+        }
+    }
+
+    return ranj;
 }
 
-double minIncBul(double *degerler,int baslangic)  //minimum artis
+double minIncBul(double *degerler,int baslangic,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)  //minimum artis
 {
 
     int i;
 
-    double min = DBL_MAX,fark;
+    double min = 100000.0,fark;
     int j = baslangic;
     baslangic++;
     baslangic %= kontrolAdet;
@@ -254,14 +484,27 @@ double minIncBul(double *degerler,int baslangic)  //minimum artis
 
     }
 
-    if(min == DBL_MAX){
+    if(min == 100000.0)
+    {
         min = 0;
+    }
+
+    if(min>(fMax->minInc))
+    {
+        fMax->minInc = min;
+    }
+    else
+    {
+        if(min<(fMin->minInc))
+        {
+            fMin->minInc = min;
+        }
     }
 
     return min;
 }
 
-double maxIncBul(double *degerler,int baslangic)  //maximum artis
+double maxIncBul(double *degerler,int baslangic,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)  //maximum artis
 {
 
     int i;
@@ -284,17 +527,29 @@ double maxIncBul(double *degerler,int baslangic)  //maximum artis
 
     }
 
+    if(max>(fMax->maxInc))
+    {
+        fMax->maxInc = max;
+    }
+    else
+    {
+        if(max<(fMin->maxInc))
+        {
+            fMin->maxInc = max;
+        }
+    }
+
     return max;
 }
 
 
 
 
-double minRedBul(double *degerler,int baslangic)  //minimum azalis
+double minRedBul(double *degerler,int baslangic,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)  //minimum azalis
 {
     int i;
 
-    double min = -DBL_MAX,fark;
+    double min = -100000.0,fark;
     int j = baslangic;
     baslangic++;
     baslangic %= kontrolAdet;
@@ -311,16 +566,28 @@ double minRedBul(double *degerler,int baslangic)  //minimum azalis
         baslangic %= kontrolAdet;
 
     }
-    if(min == -DBL_MAX){
+    if(min == -100000.0)
+    {
         min = 0;
     }
 
+    if(min>(fMax->minRed))
+    {
+        fMax->minRed = min;
+    }
+    else
+    {
+        if(min<(fMin->minRed))
+        {
+            fMin->minRed = min;
+        }
+    }
     return min;
 }
 
 
 
-double maxRedBul(double *degerler,int baslangic)  //maximum artis
+double maxRedBul(double *degerler,int baslangic,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)  //maximum artis
 {
     int i;
 
@@ -340,6 +607,18 @@ double maxRedBul(double *degerler,int baslangic)  //maximum artis
         baslangic++;
         baslangic %= kontrolAdet;
 
+    }
+
+    if(max>(fMax->maxRed))
+    {
+        fMax->maxRed = max;
+    }
+    else
+    {
+        if(max<(fMin->maxRed))
+        {
+            fMin->maxRed = max;
+        }
     }
 
     return max;
@@ -396,7 +675,7 @@ void quickS(double dizi[],int l, int r)
     }
 }
 
-void modMedianBul (double *degerler,double *median, double *mod)
+void modMedianBul (double *degerler,double *median, double *mod,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)
 {
 
     int i,j=0;
@@ -420,6 +699,18 @@ void modMedianBul (double *degerler,double *median, double *mod)
     kalan = kontrolAdet%2;
     indis = bolum + kalan - 1;
     *median = (tmp[bolum] + tmp[indis])/2;
+
+    if(*median>(fMax->median))
+    {
+        fMax->median = *median;
+    }
+    else
+    {
+        if(*median<(fMin->median))
+        {
+            fMin->median = *median;
+        }
+    }
     //cift sayıda olma durumunda kontrol edip ortalamasını almak lazım
 
     j=1;
@@ -440,13 +731,24 @@ void modMedianBul (double *degerler,double *median, double *mod)
     }
 
     *mod = tmp[maxModI];
+    if(*mod>(fMax->mod))
+    {
+        fMax->mod = *mod;
+    }
+    else
+    {
+        if(*mod<(fMin->mod))
+        {
+            fMin->mod = *mod;
+        }
+    }
     free(tmp);
 }
 
 
 
 
-void islem(double **degerler,int baslangic, int argSayisi, char ayrac, FILE **fWrite)
+void islem(double **degerler,int baslangic, int argSayisi, char ayrac, FILE **fWrite,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)
 {
 
     int x;
@@ -471,41 +773,45 @@ void islem(double **degerler,int baslangic, int argSayisi, char ayrac, FILE **fW
 
     for(x=0; x<argSayisi; x++)
     {
-        min = minBul(degerler[x]);
-        max = maxBul(degerler[x]);
-        ranj = ranjBul(min,max);
-        minInc = minIncBul(degerler[x],baslangic);
-        maxInc = maxIncBul(degerler[x],baslangic);
-        minRed = minRedBul(degerler[x],baslangic);
-        maxRed = maxRedBul(degerler[x],baslangic);
+        min = minBul(degerler[x],(fMin+x),(fMax+x));
+        max = maxBul(degerler[x],(fMin+x),(fMax+x));
+        ranj = ranjBul(min,max,(fMin+x),(fMax+x));
+        minInc = minIncBul(degerler[x],baslangic,(fMin+x),(fMax+x));
+        maxInc = maxIncBul(degerler[x],baslangic,(fMin+x),(fMax+x));
+        minRed = minRedBul(degerler[x],baslangic,(fMin+x),(fMax+x));
+        maxRed = maxRedBul(degerler[x],baslangic,(fMin+x),(fMax+x));
 
-        aritmetikOrtalama = ortalamaAritmetikBul(degerler[x]);
-        harmonikOrtalama = ortalamaHarmonikBul(degerler[x]);
-        kuadratikOrtalama = ortalamaKuadratikBul(degerler[x]);
-        varyans = varyansBul(degerler[x],aritmetikOrtalama);
-        stdSapma = standartSapma(varyans);
-        anlikOrtalamalar(degerler[x],baslangic,&anlikAritmetikOrt,&anlikHarmonikOrt,&anlikKuadratikOrt);
-        varyasyonKatSayi = varyasyonKatSayisi(stdSapma,aritmetikOrtalama);
-        modMedianBul(degerler[x],&median,&mod);
+        aritmetikOrtalama = ortalamaAritmetikBul(degerler[x],(fMin+x),(fMax+x));
+        harmonikOrtalama = ortalamaHarmonikBul(degerler[x],(fMin+x),(fMax+x));
+        kuadratikOrtalama = ortalamaKuadratikBul(degerler[x],(fMin+x),(fMax+x));
+        varyans = varyansBul(degerler[x],aritmetikOrtalama,(fMin+x),(fMax+x));
+        stdSapma = standartSapma(varyans,(fMin+x),(fMax+x));
+        anlikOrtalamalar(degerler[x],baslangic,&anlikAritmetikOrt,&anlikHarmonikOrt,&anlikKuadratikOrt,(fMin+x),(fMax+x));
+        varyasyonKatSayi = varyasyonKatSayisi(stdSapma,aritmetikOrtalama,min,max,(fMin+x),(fMax+x));
+        modMedianBul(degerler[x],&median,&mod,(fMin+x),(fMax+x));
         //printf("\nMin: %lf, Max: %lf,",geometrikOrtalama,varyans);
-        fprintf(*fWrite,"%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c",minRed,ayrac,maxRed,ayrac,minInc,ayrac,maxInc,ayrac,min,ayrac,max,ayrac,ranj,ayrac,aritmetikOrtalama,ayrac,harmonikOrtalama,ayrac,kuadratikOrtalama,ayrac,mod,ayrac,median,ayrac,stdSapma,ayrac,varyans,ayrac,anlikAritmetikOrt,ayrac,anlikHarmonikOrt,ayrac,anlikKuadratikOrt,ayrac,varyasyonKatSayi,ayrac);
+
+       // fprintf(*fWrite,"%f%c%f%c%f%c%f%c%f%c%f%c%f%c%f%c%f%c%f%c%f%c%f%c%f%c%f%c%f%c%f%c%f%c%f%c",minRed,ayrac,maxRed,ayrac,minInc,ayrac,maxInc,ayrac,min,ayrac,max,ayrac,ranj,ayrac,aritmetikOrtalama,ayrac,harmonikOrtalama,ayrac,kuadratikOrtalama,ayrac,mod,ayrac,median,ayrac,stdSapma,ayrac,varyans,ayrac,anlikAritmetikOrt,ayrac,anlikHarmonikOrt,ayrac,anlikKuadratikOrt,ayrac,varyasyonKatSayi,ayrac);
+          fprintf(*fWrite,"%f%c",min,ayrac);
     }
 
 }
 
 int main()
 {
-
+    OZELLIK_MIN *fMin;
+    OZELLIK_MAX *fMax;
 
 
     int i,j,k,x,y;
+    int degerlerMin_MaxBoyut;
     int indis;
     double oklidDegeri;
 
     int r ;
     int argSayisi = 0;
     char dosyaAdiOkuma[100];
-    char dosyaAdiYazma[] = "features2.arff";
+    char dosyaAdiYazma[] = "features.arff";
     char tmpSatir[LINESIZE];
     char ayrac;
     int kelimeUzunlugu;
@@ -514,9 +820,9 @@ int main()
     double **oklids;
 
     int degerSayisi;
-    double tmpDeger = 0;
-    double dDonustur = 1;
-    double isaret = 1;
+    double tmpDeger = 0.0;
+    double dDonustur = 1.0;
+    double isaret = 1.0;
 
 
     int sure;
@@ -682,6 +988,54 @@ int main()
                 kontrolAdet = (sure*frekans)/1000;
                 atlamaMik = (kontrolAdet*atlamaOrani)/100;
                 //   ozellikSayisi = (degerSayisi-kontrolAdet)/atlamaMik + 1;
+                degerlerMin_MaxBoyut = argSayisi + oklidBoyutu;
+                fMax = (OZELLIK_MAX *) malloc(degerlerMin_MaxBoyut*sizeof(OZELLIK_MAX));
+                for(i=0; i<degerlerMin_MaxBoyut; i++)
+                {
+                    fMax[i].min = MAX_UC;
+                    fMax[i].max = MAX_UC;
+                    fMax[i].ranj = MAX_UC;
+                    fMax[i].minInc = MAX_UC;
+                    fMax[i].maxInc = MAX_UC;
+                    fMax[i].minRed = MAX_UC;
+                    fMax[i].maxRed = MAX_UC;
+                    fMax[i].median = MAX_UC;
+                    fMax[i].mod = MAX_UC;
+                    fMax[i].aritmetikOrtalama = MAX_UC;
+                    fMax[i].harmonikOrtalama = MAX_UC;
+                    fMax[i].kuadratikOrtalama = MAX_UC;
+                    fMax[i].stdSapma = MAX_UC;
+                    fMax[i].varyans = MAX_UC;
+                    fMax[i].anlikAritmetikOrt = MAX_UC;
+                    fMax[i].anlikHarmonikOrt = MAX_UC;
+                    fMax[i].anlikKuadratikOrt = MAX_UC;
+                    fMax[i].varyasyonKatSayi = MAX_UC;
+                }
+
+                fMin = (OZELLIK_MIN *) malloc(degerlerMin_MaxBoyut*sizeof(OZELLIK_MIN));
+                for(i=0; i<degerlerMin_MaxBoyut; i++)
+                {
+                    fMin[i].min = MIN_UC;
+                    fMin[i].max = MIN_UC;
+                    fMin[i].ranj = MIN_UC;
+                    fMin[i].minInc = MIN_UC;
+                    fMin[i].maxInc = MIN_UC;
+                    fMin[i].minRed = MIN_UC;
+                    fMin[i].maxRed = MIN_UC;
+                    fMin[i].median = MIN_UC;
+                    fMin[i].mod = MIN_UC;
+                    fMin[i].aritmetikOrtalama = MIN_UC;
+                    fMin[i].harmonikOrtalama = MIN_UC;
+                    fMin[i].kuadratikOrtalama = MIN_UC;
+                    fMin[i].stdSapma = MIN_UC;
+                    fMin[i].varyans = MIN_UC;
+                    fMin[i].anlikAritmetikOrt = MIN_UC;
+                    fMin[i].anlikHarmonikOrt = MIN_UC;
+                    fMin[i].anlikKuadratikOrt = MIN_UC;
+                    fMin[i].varyasyonKatSayi = MIN_UC;
+                }
+
+
                 oklids = (double**) malloc(oklidBoyutu*sizeof(double*));
                 doubleMErr(oklids);
                 for(i=0; i<oklidBoyutu; i++)
@@ -724,8 +1078,8 @@ int main()
                     }
 
 
-                    islem(degerler,r,argSayisi,ayrac,&fWrite);
-                    islem(oklids,r,oklidBoyutu,ayrac,&fWrite);
+                    islem(degerler,r,argSayisi,ayrac,&fWrite,fMin,fMax);
+                    islem(oklids,r,oklidBoyutu,ayrac,&fWrite,(fMin+argSayisi),(fMax+argSayisi));
 
                     fprintf(fWrite,"%s",label);
                     putc('\n',fWrite);
@@ -736,12 +1090,12 @@ int main()
                 j=0;
                 for(i=0; i<argSayisi; i++)
                 {
-                    isaret = 1;
-                    tmpDeger = 0;
-                    dDonustur = 1;
+                    isaret = 1.0;
+                    tmpDeger = 0.0;
+                    dDonustur = 1.0;
                     if(tmpSatir[j]== '-')
                     {
-                        isaret = -1;
+                        isaret = -1.0;
                         j++;
                     }
 
@@ -752,7 +1106,7 @@ int main()
                         tmpDeger += (tmpSatir[j] - '0');
                         j++;
                     }
-                    if (tmpSatir[j] != ayrac)
+                    if(tmpSatir[j] != ayrac)
                         j++;
                     while(tmpSatir[j] != ayrac)
                     {
@@ -760,15 +1114,19 @@ int main()
                         tmpDeger = tmpDeger + (tmpSatir[j] - '0')/dDonustur;
                         j++;
                     }
+                    // printf("%f,",tmpDeger*isaret);
                     degerler[i][r] = tmpDeger*isaret;
 
                     j++;
 
                 }
+                // printf("\n");
                 r++;
                 r %= kontrolAdet;
                 degerSayisi++;
             }
+            //printf("\n\n");
+
             fclose(fRead);
         }
     }
@@ -787,6 +1145,14 @@ int main()
 
     fclose(fWrite);
 
+    for(i=0; i<degerlerMin_MaxBoyut; i++)
+    {
+        printf("\n%f,",fMin[i].min);
+
+    }
+
+    free(fMin);
+    free(fMax);
 
 
 
