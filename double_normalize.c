@@ -778,8 +778,8 @@ void islem(double **degerler,int baslangic, int argSayisi, char ayrac, FILE **fW
         modMedianBul(degerler[x],&median,&mod,(fMin+x),(fMax+x));
         //printf("\nMin: %lf, Max: %lf,",geometrikOrtalama,varyans);
 
-        //fprintf(*fWrite,"%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c",minRed,ayrac,maxRed,ayrac,minInc,ayrac,maxInc,ayrac,min,ayrac,max,ayrac,ranj,ayrac,aritmetikOrtalama,ayrac,harmonikOrtalama,ayrac,kuadratikOrtalama,ayrac,mod,ayrac,median,ayrac,stdSapma,ayrac,varyans,ayrac,anlikAritmetikOrt,ayrac,anlikHarmonikOrt,ayrac,anlikKuadratikOrt,ayrac,varyasyonKatSayi,ayrac);
-        fprintf(*fWrite,"%lf%c",min,ayrac);
+        fprintf(*fWrite,"%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c%lf%c",minRed,ayrac,maxRed,ayrac,minInc,ayrac,maxInc,ayrac,min,ayrac,max,ayrac,ranj,ayrac,aritmetikOrtalama,ayrac,harmonikOrtalama,ayrac,kuadratikOrtalama,ayrac,mod,ayrac,median,ayrac,stdSapma,ayrac,varyans,ayrac,anlikAritmetikOrt,ayrac,anlikHarmonikOrt,ayrac,anlikKuadratikOrt,ayrac,varyasyonKatSayi,ayrac);
+        //fprintf(*fWrite,"%lf%c",min,ayrac);
     }
 
 }
@@ -791,7 +791,7 @@ double normalizeYap(double sayi, double min, double max)
     return nSayi;
 }
 
-void normalize(double *tmp,int ozellikSayisi, OZELLIK_MIN  fMin, OZELLIK_MAX fMax, FILE *fWrite)
+void normalize(double *tmp,int ozellikSayisi, OZELLIK_MIN  fMin, OZELLIK_MAX fMax, FILE **fWrite)
 {
     double normalizeDeger;
     int i;
@@ -799,7 +799,8 @@ void normalize(double *tmp,int ozellikSayisi, OZELLIK_MIN  fMin, OZELLIK_MAX fMa
     for(i = 0; i < ozellikSayisi; i++)
     {
         normalizeDeger = normalizeYap(tmp[i],fMin.ozellik[i],fMax.ozellik[i]);
-        fprintf(fWrite, "%lf,", normalizeDeger);
+        printf("%lf,",normalizeDeger);
+        fprintf(*fWrite, "%lf,", normalizeDeger);
     }
 
 }
@@ -870,6 +871,8 @@ int main()
 
     FILE *fRead;
     FILE *fWrite;
+    FILE *fRead1;
+    FILE *fWrite1;
 
     //fRead = fopen(dosyaAdiOkuma,"r");
     //dosyaErr(fRead);
@@ -1144,10 +1147,10 @@ int main()
 
     fRead1 = fopen(dosyaAdiYazma, "r");
 
-    strcat(dosyaAdiYazma,"_normalized.arff");
-    fWrite1 = fopen(dosyaAdiYazma, "w");
+   // strcat(dosyaAdiYazma,"_normalized.arff");
+    fWrite1 = fopen("ali.arff", "wt");
 
-    fgets(line, LINESIZE, fRead);
+    fgets(line, LINESIZE, fRead1);
     fputs(line,fWrite1);
     //printf("%s",line);
    // fputc('\n',fWrite);
@@ -1156,30 +1159,14 @@ int main()
 
 
     //i=1;
-    int adimSayisi = (argSayisi+OKLID_BOYUTU)*OZELLIK_SAYISI;
+    int adimSayisi;
+    adimSayisi = (argSayisi+OKLID_BOYUTU)*OZELLIK_SAYISI;
     for(i=0; i<adimSayisi; i++)
     {
         fgets(line, LINESIZE, fRead1);
-        //printf("%s",line);
+        printf("%s",line);
+        fputs(line,fWrite1);
 
-        while(quoteCount<2)
-        {
-            if(line[j] == '\"')  // dogru mu
-            {
-                quoteCount++;
-                //printf("quoteCount++");
-            }
-            if(quoteCount < 2)
-            {
-                fputc(line[j],fWrite1);
-                printf("%c",line[j]);
-            }
-            j++;
-        }
-        quoteCount=0;
-        fputs(stringToAdd,fWrite1);
-        j=0;
-        //i++;
     }
     fgets(line, LINESIZE, fRead1);
     printf("%s",line);
@@ -1198,7 +1185,7 @@ int main()
     while(fgets(tmpSatir,LINESIZE,fRead1))
     {
 
-
+        //printf("\n%s",tmpSatir);
         j=0;
         for(i=0; i<degerlerMin_MaxBoyut; i++)
         {
@@ -1232,14 +1219,22 @@ int main()
                 tmpDouble[y] = tmpDeger*isaret;
 
 
+
+
                 j++;
             }
-            normalize(tmpDouble,OZELLIK_SAYISI,fMin[i],fMax[i],&fWrite);
-            fprintf(fWrite,"%s",label);
-            putc('\n',fWrite);
+//             for(j=0;j<ozellikSayisi;j++){
+//                printf("%lf,",tmpDouble[j]);
+//             }
+//             printf("\n%lf,%lf",fMin[i].ozellik[i],fMax[i].ozellik[i]);
+//             exit(0);
+            normalize(tmpDouble,OZELLIK_SAYISI,fMin[i],fMax[i],&fWrite1);
+
 
 
         }
+        fprintf(fWrite1,"%s",label);
+            putc('\n',fWrite1);
     }
 
 
@@ -1249,8 +1244,8 @@ int main()
 //
 //        }
 
-    fclose(fRead);
-    fclose(fWrite);
+    fclose(fRead1);
+    fclose(fWrite1);
 
 
 
