@@ -114,13 +114,12 @@ double ortalamaAritmetikBul(double *degerler,OZELLIK_MIN *fMin, OZELLIK_MAX *fMa
     {
         fMax->ozellik[ozellikIndisi] = ort;
     }
-    else
-    {
+
         if(ort<(fMin->ozellik[ozellikIndisi]))
         {
             fMin->ozellik[ozellikIndisi] = ort;
         }
-    }
+
 
 
 
@@ -149,13 +148,12 @@ double ortalamaHarmonikBul(double *degerler,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax
     {
         fMax->ozellik[ozellikIndisi] = ort;
     }
-    else
-    {
+
         if(ort<(fMin->ozellik[ozellikIndisi]))
         {
             fMin->ozellik[ozellikIndisi] = ort;
         }
-    }
+
 
     return ort;
 
@@ -179,13 +177,12 @@ double ortalamaKuadratikBul(double *degerler,OZELLIK_MIN *fMin, OZELLIK_MAX *fMa
     {
         fMax->ozellik[ozellikIndisi] = ort;
     }
-    else
-    {
+
         if(ort<(fMin->ozellik[ozellikIndisi]))
         {
             fMin->ozellik[ozellikIndisi] = ort;
         }
-    }
+
 
     return ort;
 }
@@ -199,13 +196,12 @@ double standartSapma(double varyans,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)
     {
         fMax->ozellik[ozellikIndisi] = stdSapma;
     }
-    else
-    {
+
         if(stdSapma<(fMin->ozellik[ozellikIndisi]))
         {
             fMin->ozellik[ozellikIndisi] = stdSapma;
         }
-    }
+
 
     return stdSapma;
 }
@@ -230,13 +226,12 @@ double varyansBul(double *degerler,double ortalama,OZELLIK_MIN *fMin, OZELLIK_MA
     {
         fMax->ozellik[ozellikIndisi] = varyans;
     }
-    else
-    {
+
         if(varyans<(fMin->ozellik[ozellikIndisi]))
         {
             fMin->ozellik[ozellikIndisi] = varyans;
         }
-    }
+
 
 
     return varyans;
@@ -277,39 +272,36 @@ void anlikOrtalamalar(double *degerler,int baslangic, double *anlikAritmetikOrt,
     {
         fMax->ozellik[ozellikIndisiA] = *anlikAritmetikOrt;
     }
-    else
-    {
+
         if(*anlikAritmetikOrt<(fMin->ozellik[ozellikIndisiA]))
         {
             fMin->ozellik[ozellikIndisiA] = *anlikAritmetikOrt;
         }
-    }
+
 
     *anlikHarmonikOrt = kontrolAdet/harmonikToplam;
     if(*anlikHarmonikOrt>(fMax->ozellik[ozellikIndisiH]))
     {
         fMax->ozellik[ozellikIndisiH] = *anlikHarmonikOrt;
     }
-    else
-    {
+
         if(*anlikHarmonikOrt<(fMin->ozellik[ozellikIndisiH]))
         {
             fMin->ozellik[ozellikIndisiH] = *anlikHarmonikOrt;
         }
-    }
+
 
     *anlikKuadratikOrt = sqrt(kuadratikToplam/kontrolAdet);
     if(*anlikKuadratikOrt>(fMax->ozellik[ozellikIndisiK]))
     {
         fMax->ozellik[ozellikIndisiK] = *anlikKuadratikOrt;
     }
-    else
-    {
+
         if(*anlikKuadratikOrt<(fMin->ozellik[ozellikIndisiK]))
         {
             fMin->ozellik[ozellikIndisiK] = *anlikKuadratikOrt;
         }
-    }
+
 
 }
 
@@ -343,13 +335,12 @@ double varyasyonKatSayisi(double stdSapma,double ortalama,double min,double max,
     {
         fMax->ozellik[ozellikIndisi] = vk;
     }
-    else
-    {
+
         if(vk<(fMin->ozellik[ozellikIndisi]))
         {
             fMin->ozellik[ozellikIndisi] = vk;
         }
-    }
+
 
     return vk;
 }
@@ -376,13 +367,12 @@ double minBul(double *degerler,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)
     {
         fMax->ozellik[ozellikIndisi] = min;
     }
-    else
-    {
+
         if(min<(fMin->ozellik[ozellikIndisi]))
         {
             fMin->ozellik[ozellikIndisi] = min;
         }
-    }
+
 
     return min;
 
@@ -408,13 +398,12 @@ double maxBul(double *degerler,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)
     {
         fMax->ozellik[ozellikIndisi] = max;
     }
-    else
-    {
+
         if(max<(fMin->ozellik[ozellikIndisi]))
         {
             fMin->ozellik[ozellikIndisi] = max;
         }
-    }
+
 
     return max;
 }
@@ -431,13 +420,12 @@ double ranjBul(double min, double max,OZELLIK_MIN *fMin, OZELLIK_MAX *fMax)
     {
         fMax->ozellik[ozellikIndisi] = ranj;
     }
-    else
-    {
+
         if(ranj<(fMin->ozellik[ozellikIndisi]))
         {
             fMin->ozellik[ozellikIndisi] = ranj;
         }
-    }
+
 
     return ranj;
 }
@@ -475,13 +463,12 @@ double minIncBul(double *degerler,int baslangic,OZELLIK_MIN *fMin, OZELLIK_MAX *
     {
         fMax->ozellik[ozellikIndisi] = min;
     }
-    else
-    {
+
         if(min<(fMin->ozellik[ozellikIndisi]))
         {
             fMin->ozellik[ozellikIndisi] = min;
         }
-    }
+
 
     return min;
 }
@@ -514,13 +501,12 @@ double maxIncBul(double *degerler,int baslangic,OZELLIK_MIN *fMin, OZELLIK_MAX *
     {
         fMax->ozellik[ozellikIndisi] = max;
     }
-    else
-    {
+
         if(max<(fMin->ozellik[ozellikIndisi]))
         {
             fMin->ozellik[ozellikIndisi] = max;
         }
-    }
+
 
     return max;
 }
@@ -559,13 +545,12 @@ double minRedBul(double *degerler,int baslangic,OZELLIK_MIN *fMin, OZELLIK_MAX *
     {
         fMax->ozellik[ozellikIndisi] = min;
     }
-    else
-    {
-        if(min<(fMin->ozellik[ozellikIndisi]))
+
+      if(min<(fMin->ozellik[ozellikIndisi]))
         {
             fMin->ozellik[ozellikIndisi] = min;
         }
-    }
+
     return min;
 }
 
@@ -598,13 +583,12 @@ double maxRedBul(double *degerler,int baslangic,OZELLIK_MIN *fMin, OZELLIK_MAX *
     {
         fMax->ozellik[ozellikIndisi] = max;
     }
-    else
-    {
+
         if(max<(fMin->ozellik[ozellikIndisi]))
         {
             fMin->ozellik[ozellikIndisi] = max;
         }
-    }
+
 
     return max;
 
@@ -691,13 +675,12 @@ void modMedianBul (double *degerler,double *median, double *mod,OZELLIK_MIN *fMi
     {
         fMax->ozellik[ozellikIndisiMedian] = *median;
     }
-    else
-    {
+
         if(*median<(fMin->ozellik[ozellikIndisiMedian]))
         {
             fMin->ozellik[ozellikIndisiMedian] = *median;
         }
-    }
+
     //cift sayıda olma durumunda kontrol edip ortalamasını almak lazım
 
     j=1;
@@ -722,13 +705,12 @@ void modMedianBul (double *degerler,double *median, double *mod,OZELLIK_MIN *fMi
     {
         fMax->ozellik[ozellikIndisiMod] = *mod;
     }
-    else
-    {
+
         if(*mod<(fMin->ozellik[ozellikIndisiMod]))
         {
             fMin->ozellik[ozellikIndisiMod] = *mod;
         }
-    }
+
     free(tmp);
 }
 
@@ -799,7 +781,8 @@ void normalize(double *tmp,int ozellikSayisi, OZELLIK_MIN  fMin, OZELLIK_MAX fMa
     for(i = 0; i < ozellikSayisi; i++)
     {
         normalizeDeger = normalizeYap(tmp[i],fMin.ozellik[i],fMax.ozellik[i]);
-        printf("%lf,",normalizeDeger);
+       // printf("%lf,",normalizeDeger);
+       // printf("\n%lf,%lf,%lf,%lf,",tmp[i],fMin.ozellik[i],fMax.ozellik[i],normalizeDeger);
         fprintf(*fWrite, "%lf,", normalizeDeger);
     }
 
@@ -1229,6 +1212,7 @@ int main()
 //             printf("\n%lf,%lf",fMin[i].ozellik[i],fMax[i].ozellik[i]);
 //             exit(0);
             normalize(tmpDouble,OZELLIK_SAYISI,fMin[i],fMax[i],&fWrite1);
+
 
 
 
