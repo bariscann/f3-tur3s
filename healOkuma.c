@@ -100,6 +100,7 @@ int main(int argc, const char * argv[]) {
         }
         j++;
         tahminler[i] = tmpSatir[j] - '0';
+        duzeltilenDegerler[i] = tahminler[i];
         i++;
         j=0;
         fgets(tmpSatir, SATIR_BOYUTU, fRead);
