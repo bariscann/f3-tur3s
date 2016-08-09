@@ -135,7 +135,7 @@ int main(int argc, const char * argv[]) {
     //}
     
     int bas,son;
-    int aralik = 100;
+    int aralik = 1;
     int duzeltmeAraligi;
     int max1, max2;
     int maxKordinat1 = 0;
@@ -289,7 +289,7 @@ int main(int argc, const char * argv[]) {
     }
     
     for(i=0; i<tahminSayisi; i++){
-        printf("gercek deger=%d, tahmini deger=%d, duzeltilen deger=%d ",gercekDegerler[i],tahminiDegerler[i],duzeltilenDegerler[i]);
+        printf("i=%d, gercek deger=%d, tahmini deger=%d, duzeltilen deger=%d ",i,gercekDegerler[i],tahminiDegerler[i],duzeltilenDegerler[i]);
         if(gercekDegerler[i]!=duzeltilenDegerler[i]) {
             printf("+ ");
             sayac++;
