@@ -19,7 +19,7 @@
 
 int main(int argc, const char * argv[]) {
     
-    
+    int eskiSayac=0;
     int tahminSayisi;
     int i,j,sayac;
     
@@ -121,6 +121,9 @@ int main(int argc, const char * argv[]) {
         tmpSayi[k] = '\0';
         tahminiDegerler[i] = atoi(tmpSayi);
         duzeltilenDegerler[i] = tahminiDegerler[i];
+        if(gercekDegerler[i] != tahminiDegerler[i]){
+            eskiSayac++;
+        }
         i++;
         j=0;
         k=0;
@@ -130,7 +133,6 @@ int main(int argc, const char * argv[]) {
     //for(i=0;i<tahminSayisi;i++){
     //    printf("i=%d, gercekDeger = %d, tahmin = %d\n",i,gercekDegerler[i],tahminiDegerler[i]);
     //}
-    
     
     int bas,son;
     int aralik = 100;
@@ -145,10 +147,11 @@ int main(int argc, const char * argv[]) {
     int max2Kontrol;
     int baslangic=0;
     
-    
+    sayac = 0;
     i = 1;
     while(i<tahminSayisi-aralik)
     {
+        baslangic = i-1;
         max1 = tahminiDegerler[i-1];
         max2 = tahminiDegerler[i-1];
         max1Frekans = 1;
@@ -287,14 +290,19 @@ int main(int argc, const char * argv[]) {
     
     for(i=0; i<tahminSayisi; i++){
         printf("gercek deger=%d, tahmini deger=%d, duzeltilen deger=%d ",gercekDegerler[i],tahminiDegerler[i],duzeltilenDegerler[i]);
-        if(gercekDegerler[i]!=duzeltilenDegerler[i])
-            printf("+");
+        if(gercekDegerler[i]!=duzeltilenDegerler[i]) {
+            printf("+ ");
+            sayac++;
+            
+        }
+        if(duzeltilenDegerler[i] != tahminiDegerler[i]){
+            printf("* ");
+        }
         printf("\n");
     }
-    
-    
-    
-    
+    float basari = ( (float)(tahminSayisi-sayac) / tahminSayisi)*100;
+    float eskiBasari = ((float)(tahminSayisi-eskiSayac) / tahminSayisi)*100;
+    printf("hataSayisi=%d, eskiBasariOrani=%f, yeniBasariOrani=%f\n",sayac,eskiBasari, basari);
     
     
     
