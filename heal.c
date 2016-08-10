@@ -11,8 +11,9 @@
 
 #define SATIR_BOYUTU 10000
 #define DUZELTME_ORANI 3
-#define THRESHOLD 5
+#define THRESHOLD 3
 #define ARTI_EKSI 10
+#define HATA_SINIRI 5
 //#define DOSYA_ACMA_HATA 5
 
 
@@ -120,7 +121,7 @@ int main(int argc, const char * argv[]) {
         }
         tmpSayi[k] = '\0';
         tahminiDegerler[i] = atoi(tmpSayi);
-        duzeltilenDegerler[i] = tahminiDegerler[i];
+       // duzeltilenDegerler[i] = tahminiDegerler[i];
         if(gercekDegerler[i] != tahminiDegerler[i]){
             eskiSayac++;
         }
@@ -135,7 +136,7 @@ int main(int argc, const char * argv[]) {
     //}
     
     int bas,son;
-    int aralik = 1;
+    int aralik = 100;
     int duzeltmeAraligi;
     int max1, max2;
     int maxKordinat1 = 0;
@@ -146,50 +147,114 @@ int main(int argc, const char * argv[]) {
     int tmpFrekans;
     int max2Kontrol;
     int baslangic=0;
+    int bitis;
+    int hata;
+    int deger;
+    int kordinat;
     
     sayac = 0;
-    i = 1;
+    i = 0;
     while(i<tahminSayisi-aralik)
     {
-        baslangic = i-1;
-        max1 = tahminiDegerler[i-1];
-        max2 = tahminiDegerler[i-1];
+        baslangic = i;
+        bitis = baslangic+aralik;
+        max1 = tahminiDegerler[i];
+        max2 = tahminiDegerler[i];
         max1Frekans = 1;
         max2Frekans = 1;
         tmpFrekans = 1;
-        maxKordinat1 = i-1;
-        maxKordinat2 = i-1;
-        for(j = 1; j < aralik; j++)
+        maxKordinat1 = i;
+        maxKordinat2 = i;
+       // printf("-------------------------------------------------\n");
+        i++;
+        hata = 0;
+        while(i<bitis)
         {
-            if(tahminiDegerler[i]==tahminiDegerler[i-1]){
+        	//printf("i = %d, Tahmin = %d\n",i,tahminiDegerler[i]);
+        	
+            if(tahminiDegerler[i]==tahminiDegerler[i-1-hata]){
                 tmpFrekans++;
-            }
-            
+                deger = tahminiDegerler[i];
+                kordinat = i;
+                hata = 0;
+            }  
             else
             {
-                if(tmpFrekans>=max1Frekans)
-                {
-                    max1Frekans = tmpFrekans;
-                    maxKordinat1 = i;
-                    max1 = tahminiDegerler[i-1];
-                }
+                hata++;
+
+                if(hata > HATA_SINIRI)
+                {   
+                    if(tmpFrekans>=max1Frekans)
+                    {
+                        /*if (baslangic==800)
+                        {
+                            printf("tmpFrekans= %d, maxKordinat1= %d, max1Frekans= %d, max1= %d, deger= %d\n",tmpFrekans,maxKordinat1,max1Frekans,max1,deger );
+                        }*/
+                        max2Frekans = max1Frekans;
+                        maxKordinat2 = maxKordinat1;
+                        max2 = max1;
+                        max1Frekans = tmpFrekans;
+                        maxKordinat1 = kordinat;
+                        max1 = deger;
+                        /*if (baslangic==800)
+                        {
+                            printf("tmpFrekans= %d, maxKordinat1= %d, max1Frekans= %d, max1= %d, deger= %d, max2= %d\n",tmpFrekans,maxKordinat1,max1Frekans,max1,deger,max2);
+                        }*/
+                    }
                 else
                 {
-                    if(tmpFrekans>=max2Frekans && tahminiDegerler[i-1] != max1)
+                    if(tmpFrekans>=max2Frekans && deger != max1)
                     {
                         max2Frekans = tmpFrekans;
-                        maxKordinat2 = i;
-                        max2 = tahminiDegerler[i-1];
+                        maxKordinat2 = kordinat;
+                        max2 = deger;
                     }
                 }
+                i = i - hata + 1;
                 tmpFrekans = 1;
+                hata = 0;
+                }
+                
             }
             i++;
         }
+        //printf("-------------------------------------------------\n");
+        
+
+         if(tmpFrekans>=max1Frekans)
+        {
+            max2Frekans = max1Frekans;
+            maxKordinat2 = maxKordinat1;
+            max2 = max1;
+            max1Frekans = tmpFrekans;
+            maxKordinat1 = kordinat;
+            max1 = deger;
+        }
+        else
+        {
+            if(tmpFrekans>=max2Frekans && deger != max1)
+            {
+                max2Frekans = tmpFrekans;
+                maxKordinat2 = kordinat;
+                max2 = deger;
+            }
+        }
+        if(max2Frekans == 1)
+        {
+        	//printf("baslangic= %d,bitis= %d,max1= %d, max2= %d\n", baslangic, bitis, max1, max2);
+        	//printf("tmpFrekans= %d\n",tmpFrekans );
+            //exit(0);
+        	maxKordinat2 = (baslangic + bitis)/2;
+        }
+
+        if(1)
+        {
+            printf("baslangic= %d,bitis= %d,max1= %d, max2= %d,maxKordinat2= %d, max2Frekans= %d\n", baslangic, bitis, max1, max2,maxKordinat2,max2Frekans);
+            //exit(0);
+        }
         
         
-        
-        if((maxKordinat2 + ARTI_EKSI) >=  i)
+        if((maxKordinat2 + ARTI_EKSI) >=  bitis)
         {
             j = maxKordinat2+1;
             max2Kontrol = 0;
@@ -285,10 +350,15 @@ int main(int argc, const char * argv[]) {
                 }
             }
         }
-        i++;
+        /*printf("Baslangic= %d, Bitis= %d\n",baslangic,i);
+        for(k = baslangic; k < bitis; k++)
+	    {
+        	printf("k = %d, Tahmin = %d, Duzeltilen = %d\n",k,tahminiDegerler[i],duzeltilenDegerler[k]);            
+    	}*/
+        //i++;
     }
     
-    for(i=0; i<tahminSayisi; i++){
+    for(i=0; i<tahminSayisi-aralik; i++){
         printf("i=%d, gercek deger=%d, tahmini deger=%d, duzeltilen deger=%d ",i,gercekDegerler[i],tahminiDegerler[i],duzeltilenDegerler[i]);
         if(gercekDegerler[i]!=duzeltilenDegerler[i]) {
             printf("+ ");
@@ -300,7 +370,7 @@ int main(int argc, const char * argv[]) {
         }
         printf("\n");
     }
-    float basari = ( (float)(tahminSayisi-sayac) / tahminSayisi)*100;
+    float basari = ( (float)(tahminSayisi-aralik-sayac) / (tahminSayisi-aralik))*100;
     float eskiBasari = ((float)(tahminSayisi-eskiSayac) / tahminSayisi)*100;
     printf("hataSayisi=%d, eskiBasariOrani=%f, yeniBasariOrani=%f\n",sayac,eskiBasari, basari);
     
